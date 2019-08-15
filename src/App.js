@@ -20,7 +20,19 @@ class App extends Component {
   state = {
     board: this.newBoard(),
   }
-
+  
+  renderBoard() {
+    return this.state.board.map((row, idxRow) => {
+      return <div className="row" key={idxRow}>
+                {row.map((cell, idxCell) => {
+                  return <div className="cell" key={idxCell}>
+                            {this.renderCell(cell)}
+                         </div>
+                })}
+             </div>
+    })
+  }
+  
   render() {
     console.table(
       this.state.board.map((row) => row.map((cell) => JSON.stringify(cell)))
@@ -32,13 +44,14 @@ class App extends Component {
           {RESET_BUTTON_TEXT}
         </button>
         <main className="board">
-          <div className="row">{this.renderCell()}</div>
+        {this.renderBoard()}
+          {/* <div className="row">{this.renderCell()}</div> */}
         </main>
       </div>
     )
   }
 
-  renderCell() {
+  renderCell(cell) {
     const initialContents = <span className="cellContents--initial" />
     // const mineContents = (
     //   <span className="cellContents--isMine" role="img" aria-label="mine">
