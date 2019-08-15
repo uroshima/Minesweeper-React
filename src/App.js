@@ -25,13 +25,44 @@ class App extends Component {
     return this.state.board.map((row, idxRow) => {
       return <div className="row" key={idxRow}>
                 {row.map((cell, idxCell) => {
-                  return <div className="cell" key={idxCell}>
+                  return <div className="cell" key={idxCell} onClick={() => this.isRevealed(cell)}>
                             {this.renderCell(cell)}
                          </div>
                 })}
              </div>
     })
   }
+  
+  isRevealed(cell) {
+    let myCell = cell;
+    this.setState(state => {
+      const list = state.board.map(row => row.map(cell => {
+        if (myCell === cell) {
+          cell.isRevealed = true
+        }
+      }));
+      return {
+        list,
+      }      
+    });
+    // console.log(this.state)
+    // return this.renderCell(cell);
+  }
+  
+  // toggleCell(cell) {
+  //   let content = cell.isMine;
+  //   // console.log(cell)
+    
+  //   const mineContents = (
+  //     <div className="cellContents--isMine" role="img" aria-label="mine">
+  //       💣
+  //     </div>
+  //   )
+  //   if (content === true) {
+  //     console.log("inside mine")
+  //     return <div className="cell">{mineContents}</div>
+  //   }
+  // }
   
   render() {
     console.table(
@@ -53,14 +84,33 @@ class App extends Component {
 
   renderCell(cell) {
     const initialContents = <span className="cellContents--initial" />
-    // const mineContents = (
-    //   <span className="cellContents--isMine" role="img" aria-label="mine">
-    //     💣
-    //   </span>
-    // )
-    // const clearedContents = <span className="cellContents--isCleared">#</span>
-
-    return <span className="cell">{initialContents}</span>
+    const mineContents = <span className="cellContents--isMine" role="img" aria-label="mine">💣</span>
+    const clearedContents = <span className="cellContents--isCleared">#</span>
+    
+    // console.log("this.isRevealed(cell): ")
+    if (cell.isMine && cell.isRevealed) {
+      // console.log(this)
+      // this.revealAllMines()
+      alert("GAME OVER")
+      return mineContents
+    } else if (cell.isRevealed) {
+      return clearedContents
+    } else {
+      return initialContents
+    }
+    // return <span className="cell">{initialContents}</span>
+  }
+  
+  revealAllMines() {
+    // console.log("revealAllMines")
+    // this.setState(state => {
+    //   const list = state.board.map(row => row.map(cell => {
+    //     cell.isRevealed =
+    //   }));
+    //   return {
+    //     list,
+    //   }      
+    // });
   }
 
   // Suggested/optional helper methods:
@@ -81,7 +131,10 @@ class App extends Component {
       for (let c = 0; c < boardColsCount; c++) {
         // Suggestion: const isMine = Math.floor(Math.random() * 8) === 0
         const cell = {
-          isMine: Math.floor(Math.random() * 8) === 0
+          isMine: Math.floor(Math.random() * 8) === 0,
+          isRevealed: false,
+          row: r,
+          column: c
         }
         row.push(cell)
       }
