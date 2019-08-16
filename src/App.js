@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
+import Cell from './Cell';
 
 import './App.css'
 
@@ -93,25 +94,27 @@ class App extends Component {
   
     
   renderBoard(board) {
-    return board.map((boardrow, idxRow) => {
+    return board.map((boardrow) => {
       return <div className="row">
                 {boardrow.map((boarditem) => {
                   return (
                     <div className="cell" key={boarditem.x * boardrow.length + boarditem.y}>
-                      {/* <Cell
-                        onClick={() => this.handleCellClick(boarditem.x, boarditem.y)}
-                        cMenu={(e) => this.handleContextMenu(e, boarditem.x, boarditem.y)}
+                      <Cell
+                        onClick={() => console.log(boarditem)}
+                        cMenu={(e) => console.log("DOUBLE CLICK")}
                         value={boarditem}
-                      /> */}
+                      />
                       {/* {(boardrow[boardrow.length - 1] === boarditem) ? <div className="clear" /> : ""} */}
-                      <span className="cellContents--initial" />
+                      {/* <span className="cellContents--initial" /> */}
                     </div>);
                     
               })}
              </div>
     });
   }
-
+  //   const initialContents = <span className="cellContents--initial" />
+  //   const mineContents = <span className="cellContents--isMine" role="img" aria-label="mine">💣</span>
+  //   const clearedContents = <span className="cellContents--isCleared">#</span>
   render() {
     console.table(
       this.state.board.map((row) => row.map((cell) => JSON.stringify(cell)))
