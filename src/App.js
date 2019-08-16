@@ -38,6 +38,52 @@ class App extends Component {
   //     return initialContents
   //   }
   // }
+    /* Helper Functions */
+
+  // get mines
+  getMines(board) {
+    let mineArray = [];
+
+    board.map(boardrow => {
+      boardrow.map((boarditem) => {
+        if (boarditem.isMine) {
+          mineArray.push(boarditem);
+        }
+      });
+    });
+
+    return mineArray;
+  }
+
+  // get Flags
+  getFlags(board) {
+    let flagsArray = [];
+
+    board.map(boardrow => {
+      boardrow.map((boarditem) => {
+        if (boarditem.isFlagged) {
+          flagsArray.push(boarditem);
+        }
+      });
+    });
+
+    return flagsArray;
+  }
+
+  // get Hidden cells
+  getHidden(board) {
+    let hiddenArray = [];
+
+    board.map(boardrow => {
+      boardrow.map((boarditem) => {
+        if (!boarditem.isRevealed) {
+          hiddenArray.push(boarditem);
+        }
+      });
+    });
+
+    return hiddenArray;
+  }
 
   newBoard(mines) {
     const { boardRowsCount, boardColsCount } = this.props;
@@ -86,6 +132,79 @@ class App extends Component {
     }
 
     return (board);
+  }
+  
+  getNeighbours(board) {
+    const { boardRowsCount, boardColsCount } = this.props;
+    let updatedBoard = board;
+
+    for (let i = 0; i < boardRowsCount; i++) {
+      for (let j = 0; j < boardColsCount; j++) {
+        if (board[i][j].isMine !== true) {
+          let mines = 0;
+          const area = this.traverseBoard(board[i][j].x, board[i][j].y, board);
+          area.map(value => {
+            if (value.isMine) {
+              mines++;
+            }
+          });
+          if (mines === 0) {
+            updatedBoard[i][j].isEmpty = true;
+          }
+          updatedBoard[i][j].minesAround = mines;
+        }
+      }
+    }
+    
+    return (updatedBoard);
+  };
+  
+   // looks for neighbouring cells and returns them
+   traverseBoard(x, y, board) {
+    const { boardRowsCount, boardColsCount } = this.props;
+    const el = [];
+
+    //up
+    if (x > 0) {
+      el.push(board[x - 1][y]);
+    }
+
+    //down
+    if (x < boardRowsCount - 1) {
+      el.push(board[x + 1][y]);
+    }
+
+    //left
+    if (y > 0) {
+      el.push(board[x][y - 1]);
+    }
+
+    //right
+    if (y < boardColsCount - 1) {
+      el.push(board[x][y + 1]);
+    }
+
+    // top left
+    if (x > 0 && y > 0) {
+      el.push(board[x - 1][y - 1]);
+    }
+
+    // top right
+    if (x > 0 && y < boardColsCount - 1) {
+      el.push(board[x - 1][y + 1]);
+    }
+
+    // bottom right
+    if (x < boardRowsCount - 1 && y < boardColsCount - 1) {
+      el.push(board[x + 1][y + 1]);
+    }
+
+    // bottom left
+    if (x < boardRowsCount - 1 && y > 0) {
+      el.push(board[x + 1][y - 1]);
+    }
+
+    return el;
   }
   
   resetBoard = () => {
