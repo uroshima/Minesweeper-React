@@ -18,52 +18,37 @@ class App extends Component {
   }
 
   state = {
-    board: this.newBoard(),
+    board: this.newBoard(10),
+    status: "Game on",
+    mineCount: 10,
   }
   
-  renderBoard() {
-    return this.state.board.map((row, idxRow) => {
-      return <div className="row" key={idxRow}>
-                {row.map((cell, idxCell) => {
-                  return <div className="cell" key={idxCell} onClick={() => this.isRevealed(cell)}>
-                            {this.renderCell(cell)}
-                         </div>
-                })}
-             </div>
-    })
-  }
-  
-  isRevealed(cell) {
-    let myCell = cell;
-    this.setState(state => {
-      const list = state.board.map(row => row.map(cell => {
-        if (myCell === cell) {
-          cell.isRevealed = true
-        }
-      }));
-      return {
-        list,
-      }      
-    });
-    // console.log(this.state)
-    // return this.renderCell(cell);
-  }
-  
-  // toggleCell(cell) {
-  //   let content = cell.isMine;
-  //   // console.log(cell)
-    
-  //   const mineContents = (
-  //     <div className="cellContents--isMine" role="img" aria-label="mine">
-  //       💣
-  //     </div>
-  //   )
-  //   if (content === true) {
-  //     console.log("inside mine")
-  //     return <div className="cell">{mineContents}</div>
-  //   }
+  // renderBoard() {
+  //   return this.state.board.map((row, idxRow) => {
+  //     return <div className="row" key={idxRow}>
+  //               {row.map((cell, idxCell) => {
+  //                 return <div className="cell" key={idxCell} onClick={() => this.isRevealed(cell)}>
+  //                           {this.renderCell(cell)}
+  //                        </div>
+  //               })}
+  //            </div>
+  //   })
   // }
   
+  // isRevealed(cell) {
+  //   let myCell = cell;
+  //   this.setState(state => {
+  //     const list = state.board.map(row => row.map(cell => {
+  //       if (myCell === cell) {
+  //         cell.isRevealed = true
+  //       }
+  //     }));
+  //     return {
+  //       list,
+  //     }      
+  //   });
+  // }
+
   render() {
     console.table(
       this.state.board.map((row) => row.map((cell) => JSON.stringify(cell)))
@@ -82,36 +67,24 @@ class App extends Component {
     )
   }
 
-  renderCell(cell) {
-    const initialContents = <span className="cellContents--initial" />
-    const mineContents = <span className="cellContents--isMine" role="img" aria-label="mine">💣</span>
-    const clearedContents = <span className="cellContents--isCleared">#</span>
+  // renderCell(cell) {
+  //   const initialContents = <span className="cellContents--initial" />
+  //   const mineContents = <span className="cellContents--isMine" role="img" aria-label="mine">💣</span>
+  //   const clearedContents = <span className="cellContents--isCleared">#</span>
     
-    // console.log("this.isRevealed(cell): ")
-    if (cell.isMine && cell.isRevealed) {
-      // console.log(this)
-      // this.revealAllMines()
-      alert("GAME OVER")
-      return mineContents
-    } else if (cell.isRevealed) {
-      return clearedContents
-    } else {
-      return initialContents
-    }
-    // return <span className="cell">{initialContents}</span>
-  }
+  //   if (cell.isMine && cell.isRevealed) {
+  //     alert("GAME OVER")
+  //     return mineContents
+  //   } else if (cell.isRevealed) {
+  //     return clearedContents
+  //   } else {
+  //     return initialContents
+  //   }
+  // }
   
-  revealAllMines() {
-    // console.log("revealAllMines")
-    // this.setState(state => {
-    //   const list = state.board.map(row => row.map(cell => {
-    //     cell.isRevealed =
-    //   }));
-    //   return {
-    //     list,
-    //   }      
-    // });
-  }
+  // revealAllMines() {
+
+  // }
 
   // Suggested/optional helper methods:
   //
@@ -121,32 +94,79 @@ class App extends Component {
   //
   // clearCell() {}
 
-  newBoard() {
-    const { boardRowsCount, boardColsCount } = this.props
+  // newBoard(mines) {
+  //   const { boardRowsCount, boardColsCount } = this.props
+  //   const newBoard = []
 
-    const newBoard = []
+  //   for (let r = 0; r < boardRowsCount; r++) {
+  //     const row = []
+  //     for (let c = 0; c < boardColsCount; c++) {
+  //       const cell = {
+  //         isMine: Math.floor(Math.random() * 8) === 0,
+  //         isRevealed: false,
+  //         row: r,
+  //         column: c
+  //       }
+  //       row.push(cell)
+  //     }
+  //     newBoard.push(row)
+  //   }
 
-    for (let r = 0; r < boardRowsCount; r++) {
-      const row = []
-      for (let c = 0; c < boardColsCount; c++) {
-        // Suggestion: const isMine = Math.floor(Math.random() * 8) === 0
-        const cell = {
-          isMine: Math.floor(Math.random() * 8) === 0,
+  //   return newBoard
+  // }
+  
+  newBoard(mines) {
+    const { boardRowsCount, boardColsCount } = this.props;
+    
+    let board = this.createEmptyArray(boardRowsCount, boardColsCount);
+    board = this.plantMines(board, mines);
+    // board = this.getNeighbours(board);
+    
+    return board;
+  }
+  
+  createEmptyArray(x, y) {
+    let board = [];
+
+    for (let i = 0; i < x; i++) {
+      board.push([]);
+      for (let j = 0; j < y; j++) {
+        board[i][j] = {
+          x: i,
+          y: j,
+          isMine: false,
+          minesAround: 0,
           isRevealed: false,
-          row: r,
-          column: c
-        }
-        row.push(cell)
+          isEmpty: false,
+          isFlagged: false,
+        };
       }
-      newBoard.push(row)
+    }
+    
+    return board;
+  }
+
+  plantMines(board, mines) {
+    const { boardRowsCount, boardColsCount } = this.props
+    let randomx, randomy = 0;
+    let minesLeft = mines;
+    
+
+    while (minesLeft > 0) {
+      randomx = Math.floor((Math.random() * 1000) + 1) % boardRowsCount;
+      randomy = Math.floor((Math.random() * 1000) + 1) % boardColsCount;
+      if (!(board[randomx][randomy].isMine)) {
+        board[randomx][randomy].isMine = true;
+        minesLeft--;
+      }
     }
 
-    return newBoard
+    return (board);
   }
-
-  resetBoard = () => {
-    this.setState({ board: this.newBoard() })
-  }
+  
+  // resetBoard = () => {
+  //   this.setState({ board: this.newBoard() })
+  // }
 }
 
 export default App
