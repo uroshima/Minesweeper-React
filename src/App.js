@@ -22,19 +22,6 @@ class App extends Component {
     status: "Game on",
     mineCount: 10,
   }
-  
-  // renderBoard() {
-  //   return this.state.board.map((row, idxRow) => {
-  //     return <div className="row" key={idxRow}>
-  //               {row.map((cell, idxCell) => {
-  //                 return <div className="cell" key={idxCell} onClick={() => this.isRevealed(cell)}>
-  //                           {this.renderCell(cell)}
-  //                        </div>
-  //               })}
-  //            </div>
-  //   })
-  // }
-
 
   // renderCell(cell) {
   //   const initialContents = <span className="cellContents--initial" />
@@ -50,40 +37,7 @@ class App extends Component {
   //     return initialContents
   //   }
   // }
-  
-  // revealAllMines() {
 
-  // }
-
-  // Suggested/optional helper methods:
-  //
-  // adjacentCells() {}
-  //
-  // adjacentMinesCount() {}
-  //
-  // clearCell() {}
-
-  // newBoard(mines) {
-  //   const { boardRowsCount, boardColsCount } = this.props
-  //   const newBoard = []
-
-  //   for (let r = 0; r < boardRowsCount; r++) {
-  //     const row = []
-  //     for (let c = 0; c < boardColsCount; c++) {
-  //       const cell = {
-  //         isMine: Math.floor(Math.random() * 8) === 0,
-  //         isRevealed: false,
-  //         row: r,
-  //         column: c
-  //       }
-  //       row.push(cell)
-  //     }
-  //     newBoard.push(row)
-  //   }
-
-  //   return newBoard
-  // }
-  
   newBoard(mines) {
     const { boardRowsCount, boardColsCount } = this.props;
     
@@ -133,9 +87,9 @@ class App extends Component {
     return (board);
   }
   
-  // resetBoard = () => {
-  //   this.setState({ board: this.newBoard() })
-  // }
+  resetBoard = () => {
+    this.setState({ board: this.newBoard(10) })
+  }
   
     
   renderBoard(board) {
