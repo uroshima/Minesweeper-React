@@ -207,6 +207,34 @@ class App extends Component {
     return el;
   }
   
+  // reveals the whole board
+  revealBoard() {
+    let updatedBoard = this.state.board;
+    updatedBoard.map((boardrow) => {
+      boardrow.map((boarditem) => {
+        boarditem.isRevealed = true;
+      });
+    });
+    this.setState({
+      board: updatedBoard
+    })
+  }
+
+  /* reveal logic for empty cell */
+  revealEmpty(x, y, board) {
+    let area = this.traverseBoard(x, y, board);
+    area.map(value => {
+      if (!value.isFlagged && !value.isRevealed && (value.isEmpty || !value.isMine)) {
+        board[value.x][value.y].isRevealed = true;
+        if (value.isEmpty) {
+          this.revealEmpty(value.x, value.y, board);
+        }
+      }
+    });
+    return board;
+
+  }
+  
   resetBoard = () => {
     this.setState({ board: this.newBoard(10) })
   }
