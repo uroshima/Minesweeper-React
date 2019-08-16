@@ -34,38 +34,7 @@ class App extends Component {
   //            </div>
   //   })
   // }
-  
-  // isRevealed(cell) {
-  //   let myCell = cell;
-  //   this.setState(state => {
-  //     const list = state.board.map(row => row.map(cell => {
-  //       if (myCell === cell) {
-  //         cell.isRevealed = true
-  //       }
-  //     }));
-  //     return {
-  //       list,
-  //     }      
-  //   });
-  // }
 
-  render() {
-    console.table(
-      this.state.board.map((row) => row.map((cell) => JSON.stringify(cell)))
-    )
-
-    return (
-      <div className="App">
-        <button className="resetButton" onClick={this.resetBoard}>
-          {RESET_BUTTON_TEXT}
-        </button>
-        <main className="board">
-        {this.renderBoard()}
-          {/* <div className="row">{this.renderCell()}</div> */}
-        </main>
-      </div>
-    )
-  }
 
   // renderCell(cell) {
   //   const initialContents = <span className="cellContents--initial" />
@@ -167,6 +136,45 @@ class App extends Component {
   // resetBoard = () => {
   //   this.setState({ board: this.newBoard() })
   // }
+  
+    
+  renderBoard(board) {
+    return board.map((boardrow, idxRow) => {
+      return <div className="row">
+                {boardrow.map((boarditem) => {
+                  return (
+                    <div className="cell" key={boarditem.x * boardrow.length + boarditem.y}>
+                      {/* <Cell
+                        onClick={() => this.handleCellClick(boarditem.x, boarditem.y)}
+                        cMenu={(e) => this.handleContextMenu(e, boarditem.x, boarditem.y)}
+                        value={boarditem}
+                      /> */}
+                      {/* {(boardrow[boardrow.length - 1] === boarditem) ? <div className="clear" /> : ""} */}
+                      <span className="cellContents--initial" />
+                    </div>);
+                    
+              })}
+             </div>
+    });
+  }
+
+  render() {
+    console.table(
+      this.state.board.map((row) => row.map((cell) => JSON.stringify(cell)))
+    )
+
+    return (
+      <div className="App">
+        <button className="resetButton" onClick={this.resetBoard}>
+          {RESET_BUTTON_TEXT}
+        </button>
+        <main className="board">
+        {this.renderBoard(this.state.board)}
+          {/* <div className="row">{this.renderCell()}</div> */}
+        </main>
+      </div>
+    )
+  }
 }
 
 export default App
