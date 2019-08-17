@@ -20,7 +20,7 @@ class App extends Component {
 
   state = {
     board: this.newBoard(10),
-    status: "Game on",
+    status: "Game On!",
     mineCount: 10,
   }
 
@@ -239,6 +239,70 @@ class App extends Component {
     this.setState({ board: this.newBoard(10) })
   }
   
+  // Handle User Events
+  handleCellClick(x, y) {
+
+    // check if revealed. return if true.
+    if (this.state.board[x][y].isRevealed || this.state.board[x][y].isFlagged) return null;
+
+    // check if mine. game over if true
+    if (this.state.board[x][y].isMine) {
+      this.setState({ status: "Game Over!" });
+      this.revealBoard();
+      alert("Game Over!");
+    }
+
+    let updatedBoard = this.state.board;
+    updatedBoard[x][y].isFlagged = false;
+    updatedBoard[x][y].isRevealed = true;
+
+    if (updatedBoard[x][y].isEmpty) {
+      updatedBoard = this.revealEmpty(x, y, updatedBoard);
+    }
+
+    if (this.getHidden(updatedBoard).length === this.state.mineCount) {
+      this.setState({ mineCount: 0, status: "You Win." });
+      this.revealBoard();
+      alert("You Win!");
+    }
+
+    this.setState({
+      board: updatedBoard,
+      mineCount: this.state.mineCount - this.getFlags(updatedBoard).length,
+    });
+  }
+
+  handleContextMenu(e, x, y) {
+    e.preventDefault();
+    let updatedBoard = this.state.board;
+    let mines = this.state.mineCount;
+
+    // check if already revealed
+    if (updatedBoard[x][y].isRevealed) return;
+
+    if (updatedBoard[x][y].isFlagged) {
+      updatedBoard[x][y].isFlagged = false;
+      mines++;
+    } else {
+      updatedBoard[x][y].isFlagged = true;
+      mines--;
+    }
+
+    if (mines === 0) {
+      const mineArray = this.getMines(updatedBoard);
+      const FlagArray = this.getFlags(updatedBoard);
+      if (JSON.stringify(mineArray) === JSON.stringify(FlagArray)) {
+        this.setState({ mineCount: 0, status: "You Win!" });
+        this.revealBoard();
+        alert("You Win!");
+      }
+    }
+
+    this.setState({
+      board: updatedBoard,
+      mineCount: mines,
+    });
+  }
     
   renderBoard(board) {
     return board.map((boardrow) => {
@@ -247,7 +311,7 @@ class App extends Component {
                   return (
                     <div className="cell" key={boarditem.x * boardrow.length + boarditem.y}>
                       <Cell
-                        onClick={() => console.log(boarditem)}
+                        onClick={() => this.handleCellClick(boarditem.x, boarditem.y)}
                         cMenu={(e) => console.log("DOUBLE CLICK")}
                         value={boarditem}
                       />
