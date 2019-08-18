@@ -25,22 +25,6 @@ class App extends Component {
     mineCount: 10,
   }
 
-  // renderCell(cell) {
-  //   const initialContents = <span className="cellContents--initial" />
-  //   const mineContents = <span className="cellContents--isMine" role="img" aria-label="mine">💣</span>
-  //   const clearedContents = <span className="cellContents--isCleared">#</span>
-    
-  //   if (cell.isMine && cell.isRevealed) {
-  //     alert("GAME OVER")
-  //     return mineContents
-  //   } else if (cell.isRevealed) {
-  //     return clearedContents
-  //   } else {
-  //     return initialContents
-  //   }
-  // }
-    /* Helper Functions */
-
   // get mines
   getMines(board) {
     let mineArray = [];
@@ -149,7 +133,6 @@ class App extends Component {
               mines++;
             }
           });
-          // console.log("mines: ", mines);
           if (mines === 0) {
             updatedBoard[i][j].isEmpty = true;
           }
@@ -219,7 +202,7 @@ class App extends Component {
     });
     this.setState({
       board: updatedBoard
-    })
+    });
   }
 
   /* reveal logic for empty cell */
@@ -278,8 +261,7 @@ class App extends Component {
     e.preventDefault();
     let updatedBoard = this.state.board;
     let mines = this.state.mineCount;
-    // console.log(updatedBoard)
-    // check if already revealed
+
     if (updatedBoard[x][y].isRevealed) return;
 
     if (updatedBoard[x][y].isFlagged) {
@@ -317,30 +299,21 @@ class App extends Component {
                         cMenu={(e) => this.handleContextMenu(e, boarditem.x, boarditem.y)}
                         value={boarditem}
                       />
-                      {/* {(boardrow[boardrow.length - 1] === boarditem) ? <div className="clear" /> : ""} */}
-                      {/* <span className="cellContents--initial" /> */}
                     </div>);
                     
               })}
              </div>
     });
   }
-  //   const initialContents = <span className="cellContents--initial" />
-  //   const mineContents = <span className="cellContents--isMine" role="img" aria-label="mine">💣</span>
-  //   const clearedContents = <span className="cellContents--isCleared">#</span>
-  render() {
-    // console.table(
-    //   this.state.board.map((row) => row.map((cell) => JSON.stringify(cell)))
-    // )
 
+  render() {
     return (
       <div className="App">
         <button className="resetButton" onClick={this.resetBoard}>
           {RESET_BUTTON_TEXT}
         </button>
         <main className="board">
-        {this.renderBoard(this.state.board)}
-          {/* <div className="row">{this.renderCell()}</div> */}
+          {this.renderBoard(this.state.board)}
         </main>
       </div>
     )

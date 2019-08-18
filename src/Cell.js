@@ -23,7 +23,6 @@ export default class Cell extends React.Component {
     if (value.minesAround === 0) {
       return null;
     }
-    // console.log("value.minesAround: ", value.minesAround)
     return <div>{value.minesAround}</div>
 }
 
@@ -39,22 +38,14 @@ export default class Cell extends React.Component {
         className = "cellContents--isCleared"
     }
     
-    //   (value.isRevealed ? "" : "cellContents--initial") +
-    //   (value.isMine ? "cellContents--isMine" : "") +
-    //   (value.isFlagged ? " is-flag" : "");
-
     return (
       <div
         onClick={onClick}
         className={className}
         onContextMenu={cMenu}
       >
-      {/* {console.log(this.getValue())} */}
         {this.getValue()}
       </div>
     );
   }
 }
-  //   const initialContents = <span className="cellContents--initial" />
-  //   const mineContents = <span className="cellContents--isMine" role="img" aria-label="mine">💣</span>
-  //   const clearedContents = <span className="cellContents--isCleared">#</span>
