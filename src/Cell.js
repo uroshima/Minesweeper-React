@@ -23,8 +23,9 @@ export default class Cell extends React.Component {
     if (value.minesAround === 0) {
       return null;
     }
-    return value.minesAround;
-  }
+    // console.log("value.minesAround: ", value.minesAround)
+    return <div>{value.minesAround}</div>
+}
 
   render() {
     const { value, onClick, cMenu } = this.props;
@@ -48,6 +49,7 @@ export default class Cell extends React.Component {
         className={className}
         onContextMenu={cMenu}
       >
+      {/* {console.log(this.getValue())} */}
         {this.getValue()}
       </div>
     );

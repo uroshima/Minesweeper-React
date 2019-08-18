@@ -1,3 +1,4 @@
+/*eslint-disable */
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import Cell from './Cell';
@@ -90,7 +91,7 @@ class App extends Component {
     
     let board = this.createEmptyArray(boardRowsCount, boardColsCount);
     board = this.plantMines(board, mines);
-    // board = this.getNeighbours(board);
+    board = this.getNeighbours(board);
     
     return board;
   }
@@ -148,6 +149,7 @@ class App extends Component {
               mines++;
             }
           });
+          // console.log("mines: ", mines);
           if (mines === 0) {
             updatedBoard[i][j].isEmpty = true;
           }
@@ -276,7 +278,7 @@ class App extends Component {
     e.preventDefault();
     let updatedBoard = this.state.board;
     let mines = this.state.mineCount;
-
+    // console.log(updatedBoard)
     // check if already revealed
     if (updatedBoard[x][y].isRevealed) return;
 
@@ -306,13 +308,13 @@ class App extends Component {
     
   renderBoard(board) {
     return board.map((boardrow) => {
-      return <div className="row">
+      return <div className="row" key={boardrow[0].x}>
                 {boardrow.map((boarditem) => {
                   return (
                     <div className="cell" key={boarditem.x * boardrow.length + boarditem.y}>
                       <Cell
                         onClick={() => this.handleCellClick(boarditem.x, boarditem.y)}
-                        cMenu={(e) => console.log("DOUBLE CLICK")}
+                        cMenu={(e) => this.handleContextMenu(e, boarditem.x, boarditem.y)}
                         value={boarditem}
                       />
                       {/* {(boardrow[boardrow.length - 1] === boarditem) ? <div className="clear" /> : ""} */}
@@ -327,9 +329,9 @@ class App extends Component {
   //   const mineContents = <span className="cellContents--isMine" role="img" aria-label="mine">💣</span>
   //   const clearedContents = <span className="cellContents--isCleared">#</span>
   render() {
-    console.table(
-      this.state.board.map((row) => row.map((cell) => JSON.stringify(cell)))
-    )
+    // console.table(
+    //   this.state.board.map((row) => row.map((cell) => JSON.stringify(cell)))
+    // )
 
     return (
       <div className="App">
